@@ -1,0 +1,17 @@
+#!/usr/bin/env -S just --one --justfile
+
+@build:
+    go build -o "$XDG_CACHE_HOME/go/bin/"
+
+@install:
+    go install colored-md
+
+@fix:
+    go fmt
+
+@lint:
+    go vet
+
+@update:
+    go get -u
+    go mod tidy
