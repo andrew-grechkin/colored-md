@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/glamour/ansi"
@@ -25,7 +26,7 @@ const (
 var DarkStyleConfig = ansi.StyleConfig{
 	Document: ansi.StyleBlock{
 		StylePrimitive: ansi.StylePrimitive{
-			Color:       stringPtr("252"),
+			Color: stringPtr("252"),
 		},
 		Margin: uintPtr(defaultMargin),
 	},
@@ -229,6 +230,56 @@ var DarkStyleConfig = ansi.StyleConfig{
 	},
 }
 
+func readLine(f *os.File) (string, error) {
+	var line []byte
+	buf := make([]byte, 1)
+
+	for {
+		n, err := f.Read(buf)
+		if n > 0 {
+			line = append(line, buf[0])
+			if buf[0] == '\n' {
+				return string(line), nil
+			}
+		}
+		if err != nil {
+			if err == io.EOF && len(line) > 0 {
+				return string(line), nil
+			}
+			return string(line), err
+		}
+	}
+}
+
+func skipShebangIfNeeded(f *os.File) error {
+	line, err := readLine(f)
+	if err != nil && err != io.EOF {
+		return err
+	}
+
+	if !strings.HasPrefix(line, "#!") || !strings.Contains(line, "colored-md") {
+		_, err := f.Seek(0, 0)
+		return err
+	}
+
+	// Skip following empty lines
+	for {
+		posBeforeRead, _ := f.Seek(0, io.SeekCurrent)
+
+		line, err := readLine(f)
+		if err != nil {
+			break
+		}
+
+		if strings.TrimSpace(line) != "" {
+			_, err = f.Seek(posBeforeRead, 0)
+			return err
+		}
+	}
+
+	return nil
+}
+
 func main() {
 	width, err := strconv.Atoi(os.Getenv("GLAMOUR_WIDTH"))
 	if err != nil {
@@ -266,6 +317,14 @@ func main() {
 		}
 		defer f.Close()
 
+		fileInfo, err := f.Stat()
+		if err == nil && fileInfo.Mode().Perm()&0111 != 0 {
+			if err := skipShebangIfNeeded(f); err != nil {
+				fmt.Fprintf(os.Stderr, "Error processing file %s: %s\n", filename, err)
+				continue
+			}
+		}
+
 		process(f, r)
 	}
 }
@@ -282,5 +341,6 @@ func process(reader io.Reader, renderer *glamour.TermRenderer) {
 		fmt.Fprintf(os.Stderr, "Error rendering markdown: %s\n", err)
 		return
 	}
+
 	fmt.Fprintf(os.Stdout, "%s", md)
 }

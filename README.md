@@ -7,6 +7,7 @@
 - Renders Markdown to ANSI-colored terminal output.
 - Customizable output width via `GLAMOUR_WIDTH` environment variable.
 - Processes both piped input and specified file paths.
+- Supports executable markdown files with shebangs.
 
 ## Installation
 
@@ -41,6 +42,25 @@ To read from standard input while also processing files, use `-` as a filename:
 ```bash
 cat my_file.md | colored-md - another_file.md
 ```
+
+### Executable markdown files
+
+Make markdown files directly executable by adding a shebang:
+
+```bash
+#!/usr/bin/env -S colored-md
+# My Document
+Content here...
+```
+
+Then make the file executable and run it:
+
+```bash
+chmod +x document.md
+./document.md
+```
+
+The shebang line will be automatically stripped from the rendered output. See `example/executable.md` for a working example.
 
 ### Customizing output width
 
