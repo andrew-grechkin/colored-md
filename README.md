@@ -1,13 +1,32 @@
 # colored-md
 
-`colored-md` is a command-line utility for rendering Markdown files with syntax highlighting and formatting directly in your terminal. It's built on top of the `charmbracelet/glamour` library, providing a simple wrapper to bring rich, colored Markdown output to your CLI workflows.
+`colored-md` is a command-line utility for rendering Markdown files with syntax highlighting and formatting directly in your terminal.
+
+It's built on top of the [charmbracelet/glamour](https://github.com/charmbracelet/glamour) library, providing a simple wrapper to bring rich, colored Markdown output to your CLI workflows.
+
+## SYNOPSIS:
+
+```bash
+colored-md README.md
+```
+
+## OPTIONS:
+
+* --help        Show help
+* --version     Show version
+* --styles      List supported styles
 
 ## Features
 
-- Renders Markdown to ANSI-colored terminal output.
-- Customizable output width via `GLAMOUR_WIDTH` environment variable.
-- Processes both piped input and specified file paths.
-- Supports executable markdown files with shebangs.
+- Renders Markdown to ANSI-colored terminal output
+- Customizable output width via `GLAMOUR_WIDTH` environment variable
+- Customizable style via `GLAMOUR_STYLE` environment variable
+- Processes both piped input and specified file paths
+- Supports executable markdown files with shebangs
+
+## Example screenshot
+
+![executable](doc/screenshot.jpg)
 
 ## Installation
 
@@ -24,9 +43,7 @@ go install github.com/andrew-grechkin/colored-md@latest
 You can pipe Markdown content directly to `colored-md`:
 
 ```bash
-echo "# Hello World
-
-This is **bold** text." | colored-md
+echo -e "# Hello World\nThis is **bold** text." | colored-md
 ```
 
 ### Processing files
@@ -40,7 +57,7 @@ colored-md README.md my_document.md
 To read from standard input while also processing files, use `-` as a filename:
 
 ```bash
-cat my_file.md | colored-md - another_file.md
+cat my_file.md | colored-md - README.md
 ```
 
 ### Executable markdown files
@@ -67,22 +84,31 @@ The shebang line will be automatically stripped from the rendered output. See `e
 Set the `GLAMOUR_WIDTH` environment variable to control the word wrap width:
 
 ```bash
-GLAMOUR_WIDTH=80 colored-md my_file.md
+GLAMOUR_WIDTH=80 colored-md README.md
 ```
 
 ### Styling
 
-`colored-md` uses a predefined `DarkStyleConfig`. While `glamour` typically allows setting styles via `GLAMOUR_STYLE`
-environment variable, `colored-md` overrides this with its internal `DarkStyleConfig`. Future versions might expose more
-style customization options. This is done because of weird un-configurable marging of several spaces all default
-`glamour` styles have. They also always add empty lines around document, which is undesirable.
+Set the `GLAMOUR_STYLE` environment variable to control the style:
+
+```bash
+GLAMOUR_STYLE=dracula colored-md README.md
+```
+
+Every style has following overrides:
+
+- Document prefix and suffix new line is removed
+- Undesired margin of 2 spaces on the left side of the whole document
+- Code margin is removed
 
 ## Why `colored-md` over `glow`?
 
 While `glow` is a popular Markdown renderer, `colored-md` was created to address specific shortcomings when used as a CLI filter:
 
-- **Undesired directory traversal**: `glow` has functionality to traverse directories and find Markdown files, which is often not desired when simply piping content or processing specific files.
-- **Forced paging in pipelines**: `glow` tends to force paging (e.g., using `less`) even when used in pipelines, which can disrupt CLI workflows where direct output is expected.
+- **Undesired directory traversal**: `glow` has functionality to traverse directories and find Markdown files, which is often not desired when simply piping content or processing specific files
+- **Forced paging in pipelines**: `glow` tends to force paging (e.g., using `less`) even when used in pipelines, which can disrupt CLI workflows where direct output is expected
+- **Overrides in styles**: `glow` uses styles provided by glamour as is, as described above these styles have undesired margins and paddings
+- **Shebang support**: Self executable markdown files are not supported
 
 `colored-md` aims to be a simpler, more predictable CLI filter for Markdown rendering, following strictly UNIX philosophy.
 
