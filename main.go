@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	defaultWidth = 120
+	defaultWidth = "120"
 )
 
 //go:embed README.md
@@ -96,18 +96,20 @@ func printHelp(renderer *glamour.TermRenderer) {
 	os.Exit(0)
 }
 
+func getEnv(key, fallback string) string {
+	if val, ok := os.LookupEnv(key); ok && val != "" {
+		return val
+	}
+	return fallback
+}
+
 func main() {
-	width, err := strconv.Atoi(os.Getenv("GLAMOUR_WIDTH"))
+	width, err := strconv.Atoi(getEnv("GLAMOUR_WIDTH", defaultWidth))
 	if err != nil {
-		width = defaultWidth
+		width, _ = strconv.Atoi(defaultWidth)
 	}
 
-	styleName := os.Getenv("GLAMOUR_STYLE")
-	if styleName == "" {
-		styleName = defaultStyle
-	}
-
-	customConfig := GetStyleConfig(styleName)
+	customConfig := GetStyleConfig()
 
 	r, err := glamour.NewTermRenderer(
 		glamour.WithStyles(customConfig),

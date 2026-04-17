@@ -21,6 +21,7 @@ colored-md README.md
 - Renders Markdown to ANSI-colored terminal output
 - Customizable output width via `GLAMOUR_WIDTH` environment variable
 - Customizable style via `GLAMOUR_STYLE` environment variable
+- Supports overriding styling defaults
 - Processes both piped input and specified file paths
 - Supports executable markdown files with shebangs
 
@@ -79,12 +80,19 @@ chmod +x document.md
 
 The shebang line will be automatically stripped from the rendered output. See `example/executable.md` for a working example.
 
-### Customizing output width
+### Customize output width
 
 Set the `GLAMOUR_WIDTH` environment variable to control the word wrap width:
 
 ```bash
 GLAMOUR_WIDTH=80 colored-md README.md
+```
+
+### Customize margins
+
+```bash
+GLAMOUR_OVERRIDE_MARGIN=2 colored-md README.md
+GLAMOUR_OVERRIDE_MARGIN_CODE=8 colored-md README.md
 ```
 
 ### Styling
