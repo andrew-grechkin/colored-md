@@ -7,7 +7,7 @@ It's built on top of the [charmbracelet/glamour](https://github.com/charmbracele
 ## SYNOPSIS:
 
 ```bash
-colored-md README.md
+echo -e "# Hello World\nThis is **bold** text." | colored-md
 ```
 
 ## OPTIONS:
@@ -16,7 +16,7 @@ colored-md README.md
 * --version     Show version
 * --styles      List supported styles
 
-## Features
+## FEATURES
 
 - Renders Markdown to ANSI-colored terminal output
 - Customizable output width via `GLAMOUR_WIDTH` environment variable
@@ -24,12 +24,13 @@ colored-md README.md
 - Supports overriding styling defaults
 - Processes both piped input and specified file paths
 - Supports executable markdown files with shebangs
+- Autodetects dark/light terminal mode
 
-## Example screenshot
+## EXAMPLE SCREENSHOT
 
 ![executable](doc/screenshot.jpg)
 
-## Installation
+## INSTALLATION
 
 To install `colored-md`:
 
@@ -37,7 +38,7 @@ To install `colored-md`:
 go install github.com/andrew-grechkin/colored-md@latest
 ```
 
-## Usage
+## USAGE
 
 ### Piping input
 
@@ -109,7 +110,9 @@ Every style has following overrides:
 - Undesired margin of 2 spaces on the left side of the whole document
 - Code margin is removed
 
-## Why `colored-md` over `glow`?
+## MOTIVATION
+
+**Why `colored-md` over `glow`?**
 
 While `glow` is a popular Markdown renderer, `colored-md` was created to address specific shortcomings when used as a CLI filter:
 
@@ -118,12 +121,14 @@ While `glow` is a popular Markdown renderer, `colored-md` was created to address
 - **Overrides in styles**: `glow` uses styles provided by glamour as is, as described above these styles have undesired margins and paddings
 - **Shebang support**: Self executable markdown files are not supported
 
-`colored-md` aims to be a simpler, more predictable CLI filter for Markdown rendering, following strictly UNIX philosophy.
+`colored-md` aims to be a simpler, more predictable CLI filter for Markdown rendering and nothing more, following
+strictly UNIX philosophy.
 
-## Author
+## AUTHOR
 
 - Andrew Grechkin
 
-## License
+## LICENSE
 
-This project is licensed under the GNU General Public License Version 2 (GPLv2). See the `LICENSE` file for details.
+This project is licensed under the GNU General Public License Version 2 (GPLv2).
+See the `LICENSE` file for details.

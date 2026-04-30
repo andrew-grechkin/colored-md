@@ -8,15 +8,20 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/glamour"
+	"golang.org/x/term"
 )
 
 const (
-	defaultWidth = "120"
+	defaultStyleDark  = "dark"
+	defaultStyleLight = "light"
+	defaultWidth      = 120
 )
 
 //go:embed README.md
@@ -96,18 +101,109 @@ func printHelp(renderer *glamour.TermRenderer) {
 	os.Exit(0)
 }
 
-func getEnv(key, fallback string) string {
+func getEnv(key string, defaultFn func() string) string {
 	if val, ok := os.LookupEnv(key); ok && val != "" {
 		return val
 	}
-	return fallback
+	return defaultFn()
+}
+
+func getEnvInt(key string, defaultFn func() int64) int64 {
+	if val, ok := os.LookupEnv(key); ok && val != "" {
+		if parsed, err := strconv.ParseInt(val, 10, 32); err == nil {
+			return parsed
+		}
+	}
+	return defaultFn()
+}
+
+func getEnvUint(key string, defaultFn func() uint64) uint64 {
+	if val, ok := os.LookupEnv(key); ok && val != "" {
+		if parsed, err := strconv.ParseUint(val, 10, 32); err == nil {
+			return parsed
+		}
+	}
+	return defaultFn()
+}
+
+// queryTerminalBackground sends OSC 11 query and returns the terminal response
+// Returns empty string if query fails or times out
+func queryTerminalBackground() string {
+	if !term.IsTerminal(int(os.Stdout.Fd())) {
+		return ""
+	}
+
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		return ""
+	}
+	defer term.Restore(int(os.Stdin.Fd()), oldState)
+
+	os.Stdout.Write([]byte("\033]11;?\007"))
+
+	response := make([]byte, 64)
+	readChan := make(chan int)
+	go func() {
+		n, _ := os.Stdin.Read(response)
+		readChan <- n
+	}()
+
+	select {
+	case n := <-readChan:
+		return string(response[:n])
+	case <-time.After(25 * time.Millisecond):
+		return ""
+	}
+}
+
+func hexToFloat(h string) float64 {
+	val, _ := strconv.ParseUint(h, 16, 64)
+	max := (1 << (uint(len(h)) * 4)) - 1
+	return float64(val) / float64(max)
+}
+
+// parseTerminalBackgroundResponse parses OSC 11 response
+func parseTerminalBackgroundResponse(res string) string {
+	// The response format is usually: ^]11;rgb:rrrr/gggg/bbbb^G
+	re := regexp.MustCompile(`rgb:([0-9a-fA-F]+)/([0-9a-fA-F]+)/([0-9a-fA-F]+)`)
+	matches := re.FindStringSubmatch(res)
+	if len(matches) == 4 {
+		r := hexToFloat(matches[1])
+		g := hexToFloat(matches[2])
+		b := hexToFloat(matches[3])
+
+		luma := (0.299 * r) + (0.587 * g) + (0.114 * b)
+		if luma > 0.5 {
+			return defaultStyleLight
+		}
+	}
+
+	return defaultStyleDark
+}
+
+// detectStyleByTerminalBrightness determines terminal background brightness
+func detectStyleByTerminalBrightness() string {
+	if colorfgbg := os.Getenv("COLORFGBG"); colorfgbg != "" {
+		parts := strings.Split(colorfgbg, ";")
+		if len(parts) >= 2 {
+			if bg, err := strconv.Atoi(parts[len(parts)-1]); err == nil && bg >= 7 {
+				return defaultStyleLight
+			}
+			return defaultStyleDark
+		}
+	}
+
+	if res := queryTerminalBackground(); res != "" {
+		return parseTerminalBackgroundResponse(res)
+	}
+
+	return defaultStyleDark
 }
 
 func main() {
-	width, err := strconv.Atoi(getEnv("GLAMOUR_WIDTH", defaultWidth))
-	if err != nil {
-		width, _ = strconv.Atoi(defaultWidth)
-	}
+	width := int(getEnvInt("GLAMOUR_WIDTH", func() int64 {
+		return defaultWidth
+	}))
 
 	customConfig := GetStyleConfig()
 
