@@ -22,6 +22,27 @@ const (
 	defaultStyleDark  = "dark"
 	defaultStyleLight = "light"
 	defaultWidth      = 120
+
+	gnuHelpText = `Usage: colored-md [OPTIONS] [FILE...]
+
+A terminal markdown filter with syntax highlighting.
+
+If no FILE is specified or FILE is '-', read from standard input.
+Multiple files can be specified and will be processed in order.
+
+Options:
+  -h, --help        Display this help message and exit
+  -v, --version     Display version information and exit
+  -s, --styles      List available styles and exit
+
+Environment Variables:
+  GLAMOUR_WIDTH     Set the rendering width (default: 120)
+  GLAMOUR_STYLE     Set one of the predefined styles
+
+Examples:
+  colored-md file1.md file2.md
+  colored-md < file.md
+`
 )
 
 //go:embed README.md
@@ -97,6 +118,11 @@ func printStyles() {
 }
 
 func printHelp(renderer *glamour.TermRenderer) {
+	if !term.IsTerminal(int(os.Stdout.Fd())) {
+		fmt.Print(gnuHelpText)
+		os.Exit(0)
+	}
+
 	process(bytes.NewReader(readmeContent), renderer)
 	os.Exit(0)
 }
