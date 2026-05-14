@@ -22,28 +22,10 @@ const (
 	defaultStyleDark  = "dark"
 	defaultStyleLight = "light"
 	defaultWidth      = 120
-
-	gnuHelpText = `Usage: colored-md [OPTIONS] [FILE...]
-
-A terminal markdown filter with syntax highlighting.
-
-If no FILE is specified or FILE is '-', read from standard input.
-Multiple files can be specified and will be processed in order.
-
-Options:
-  -h, --help        Display this help message and exit
-  -v, --version     Display version information and exit
-  -s, --styles      List available styles and exit
-
-Environment Variables:
-  GLAMOUR_WIDTH     Set the rendering width (default: 120)
-  GLAMOUR_STYLE     Set one of the predefined styles
-
-Examples:
-  colored-md file1.md file2.md
-  colored-md < file.md
-`
 )
+
+//go:embed help.txt
+var gnuHelpText []byte
 
 //go:embed README.md
 var readmeContent []byte
@@ -101,7 +83,7 @@ func skipShebangIfNeeded(f *os.File) error {
 
 func printVersion() {
 	if info, ok := debug.ReadBuildInfo(); ok {
-		out, _ := json.Marshal(info.Main)
+		out, _ := json.MarshalIndent(info.Main, "", "  ")
 		fmt.Println(string(out))
 	} else {
 		fmt.Println("{}")
@@ -117,12 +99,12 @@ func printStyles() {
 	os.Exit(0)
 }
 
-func printHelp(renderer *glamour.TermRenderer) {
-	if !term.IsTerminal(int(os.Stdout.Fd())) {
-		fmt.Print(gnuHelpText)
-		os.Exit(0)
-	}
+func printHelp() {
+	fmt.Print(string(gnuHelpText))
+	os.Exit(0)
+}
 
+func printReadme(renderer *glamour.TermRenderer) {
 	process(bytes.NewReader(readmeContent), renderer)
 	os.Exit(0)
 }
@@ -248,7 +230,9 @@ func main() {
 		case "--version", "-v":
 			printVersion()
 		case "--help", "-h":
-			printHelp(r)
+			printHelp()
+		case "--man", "-m":
+			printReadme(r)
 		case "--styles", "-s":
 			printStyles()
 		}

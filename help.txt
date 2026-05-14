@@ -1,0 +1,20 @@
+Usage: colored-md [OPTIONS] [FILE...]
+
+A terminal markdown filter with syntax highlighting.
+
+If no FILE is specified or FILE is '-', read from standard input.
+Multiple files can be specified and will be processed in order.
+
+Options:
+  -h, --help        Display help message
+  -m, --man         Display full readme
+  -v, --version     Display version information (tip: colored-md --version | jq -r .Version)
+  -s, --styles      List available styles and exit
+
+Environment Variables:
+  GLAMOUR_WIDTH     Set the rendering width (default: 120)
+  GLAMOUR_STYLE     Set one of the predefined styles
+
+Examples:
+  colored-md file1.md file2.md
+  colored-md < file.md

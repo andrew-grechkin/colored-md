@@ -2,7 +2,8 @@
 
 ## Development Setup
 
-To get started with development, you'll need Go (version 1.21 or higher) installed on your system. Optionally, you can install `just` for simplified command execution.
+To get started with development, you'll need Go (version 1.21 or higher) installed on your system.
+Optionally, you can install `just` for simplified command execution.
 
 ### Building the Project
 
@@ -20,7 +21,8 @@ Alternatively, without `just`, you can use `go build`:
 go build -o "$(go env GOCACHE)/bin/colored-md" .
 ```
 
-Ensure that `$XDG_CACHE_HOME/go/bin/` (or `$(go env GOCACHE)/bin/`) is included in your system's `PATH` environment variable to run `colored-md` from any directory.
+Ensure that `$XDG_CACHE_HOME/go/bin` (or `$(go env GOCACHE)/bin`) is included in your system's `PATH` environment
+variable to run `colored-md` from any directory.
 
 ### Updating Dependencies
 
@@ -32,16 +34,12 @@ just update
 
 ## Code Style and Linting
 
-This project follows standard Go idioms and formatting. Please ensure your code is formatted with `go fmt`:
-
 ```bash
-go fmt ./...
+just fix
 ```
 
-We also recommend running `go vet` to catch common errors:
-
 ```bash
-go vet ./...
+just lint
 ```
 
 ## Testing

@@ -1,6 +1,9 @@
 # colored-md
 
-`colored-md` is a command-line utility for rendering Markdown files with syntax highlighting and formatting directly in your terminal.
+[![Go Reference](https://pkg.go.dev/badge/github.com/andrew-grechkin/colored-md.svg)](https://pkg.go.dev/github.com/andrew-grechkin/colored-md)
+[![Go Report Card](https://goreportcard.com/badge/github.com/andrew-grechkin/colored-md)](https://goreportcard.com/report/github.com/andrew-grechkin/colored-md)
+
+A CLI filter for rendering Markdown files with syntax highlighting and formatting directly in your terminal.
 
 It's built on top of the [charmbracelet/glamour](https://github.com/charmbracelet/glamour) library, providing a simple wrapper to bring rich, colored Markdown output to your CLI workflows.
 
@@ -12,9 +15,10 @@ echo -e "# Hello World\nThis is **bold** text." | colored-md
 
 ## OPTIONS:
 
-* --help        Show help
-* --version     Show version
-* --styles      List supported styles
+- -h, --help Display help message
+- -m, --man Display full readme
+- -v, --version Display version information (tip: colored-md --version | jq -r .Version)
+- -s, --styles List supported styles
 
 ## FEATURES
 
