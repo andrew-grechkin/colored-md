@@ -7,13 +7,13 @@ A CLI filter for rendering Markdown files with syntax highlighting and formattin
 
 It's built on top of the [charmbracelet/glamour](https://github.com/charmbracelet/glamour) library, providing a simple wrapper to bring rich, colored Markdown output to your CLI workflows.
 
-## SYNOPSIS:
+## SYNOPSIS
 
 ```bash
 echo -e "# Hello World\nThis is **bold** text." | colored-md
 ```
 
-## OPTIONS:
+## OPTIONS
 
 - -h, --help Display help message
 - -m, --man Display full readme
