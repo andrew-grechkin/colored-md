@@ -1,7 +1,6 @@
 # colored-md
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/andrew-grechkin/colored-md.svg)](https://pkg.go.dev/github.com/andrew-grechkin/colored-md)
-[![Go Report Card](https://goreportcard.com/badge/github.com/andrew-grechkin/colored-md)](https://goreportcard.com/report/github.com/andrew-grechkin/colored-md)
 
 A CLI filter for rendering Markdown files with syntax highlighting and formatting directly in your terminal.
 
@@ -20,6 +19,28 @@ echo -e "# Hello World\nThis is **bold** text." | colored-md
 - -v, --version Display version information (tip: colored-md --version | jq -r .Version)
 - -s, --styles List supported styles
 
+## INSTALLATION
+
+### Using `mise`
+
+```bash
+mise use go:github.com/andrew-grechkin/colored-md@latest
+```
+
+### Building from source
+
+```bash
+go install github.com/andrew-grechkin/colored-md@latest
+```
+
+By default, `go install` creates binaries in `$GOBIN` or `$GOPATH/bin`.
+To make sure you can use the installed binary you need to add this directory to your path.
+
+```bash
+# ensure the go install binaries are in your PATH, consider adding to your shell startup config
+export PATH="${GOBIN:-${GOPATH:-$HOME/go}/bin}:$PATH"
+```
+
 ## FEATURES
 
 - Renders Markdown to ANSI-colored terminal output
@@ -33,14 +54,6 @@ echo -e "# Hello World\nThis is **bold** text." | colored-md
 ## EXAMPLE SCREENSHOT
 
 ![executable](doc/screenshot.jpg)
-
-## INSTALLATION
-
-To install `colored-md`:
-
-```bash
-go install github.com/andrew-grechkin/colored-md@latest
-```
 
 ## USAGE
 
