@@ -57,5 +57,14 @@ func GetStyleConfig() ansi.StyleConfig {
 
 	config.CodeBlock.Margin = uintPtr(codeMargin)
 
+	// Opt-in OSC 8 hyperlink for the URL/href element via `GLAMOUR_HYPERLINKS` (any non-empty value).
+	// In terminals that support OSC 8 the URL becomes a real clickable hyperlink; terminals that
+	// parse OSC but don't implement type 8 quietly drop it and show the URL as text. Non-OSC-parsing
+	// setups (older tmux without `allow-passthrough on`, screen, some minimal wrappers) will surface
+	// the raw `]8;;` markers, which is why this is opt-in rather than default.
+	if getEnv("GLAMOUR_HYPERLINKS", func() string { return "" }) != "" {
+		config.Link.Format = "\x1b]8;;{{.text}}\x1b\\{{.text}}\x1b]8;;\x1b\\"
+	}
+
 	return config
 }
