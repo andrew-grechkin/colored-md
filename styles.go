@@ -7,7 +7,8 @@ import (
 	"github.com/charmbracelet/glamour/styles"
 )
 
-func uintPtr(u uint) *uint { return &u }
+//go:fix inline
+func uintPtr(u uint) *uint { return new(u) }
 
 const (
 	// defaultListIndent      = 2
@@ -52,10 +53,10 @@ func GetStyleConfig() ansi.StyleConfig {
 		StylePrimitive: ansi.StylePrimitive{
 			Color: docColor,
 		},
-		Margin: uintPtr(margin),
+		Margin: new(margin),
 	}
 
-	config.CodeBlock.Margin = uintPtr(codeMargin)
+	config.CodeBlock.Margin = new(codeMargin)
 
 	// Opt-in OSC 8 hyperlink for the URL/href element via `GLAMOUR_HYPERLINKS` (any non-empty value).
 	// In terminals that support OSC 8 the URL becomes a real clickable hyperlink; terminals that
