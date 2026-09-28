@@ -7,7 +7,8 @@ import (
 	"github.com/charmbracelet/glamour/styles"
 )
 
-func uintPtr(u uint) *uint { return &u }
+//go:fix inline
+func uintPtr(u uint) *uint { return new(u) }
 
 const (
 	// defaultListIndent      = 2
@@ -49,13 +50,11 @@ func GetStyleConfig() ansi.StyleConfig {
 	// explicitly recreate the nested structs to override
 	docColor := config.Document.Color
 	config.Document = ansi.StyleBlock{
-		StylePrimitive: ansi.StylePrimitive{
-			Color: docColor,
-		},
-		Margin: uintPtr(margin),
+		Color:  docColor,
+		Margin: new(margin),
 	}
 
-	config.CodeBlock.Margin = uintPtr(codeMargin)
+	config.CodeBlock.Margin = new(codeMargin)
 
 	return config
 }

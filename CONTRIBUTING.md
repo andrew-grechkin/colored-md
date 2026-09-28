@@ -1,28 +1,25 @@
-# Contributing to colored-md
+# Contributing
 
 ## Development Setup
 
-To get started with development, you'll need Go (version 1.21 or higher) installed on your system.
-Optionally, you can install `just` for simplified command execution.
+To get started with development, you'll need Go installed on your system.
+Optionally, you can install [`just`](https://github.com/casey/just) for simplified command execution.
 
-### Building the Project
+### Building
 
-If you have `just` installed, you can build the executable with:
+Build binary:
 
 ```bash
 just build
 ```
 
-This command compiles the `main.go` file and places the `colored-md` executable in `$XDG_CACHE_HOME/go/bin/`.
-
-Alternatively, without `just`, you can use `go build`:
+Global install (into `$GOBIN`):
 
 ```bash
-go build -o "$(go env GOCACHE)/bin/colored-md" .
+just install
 ```
 
-Ensure that `$XDG_CACHE_HOME/go/bin` (or `$(go env GOCACHE)/bin`) is included in your system's `PATH` environment
-variable to run `colored-md` from any directory.
+Ensure that directory is on your `PATH` to run the utilities from anywhere.
 
 ### Updating Dependencies
 
