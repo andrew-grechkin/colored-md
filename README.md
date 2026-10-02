@@ -21,7 +21,7 @@ echo -e "# Hello World\nThis is **bold** text." | colored-md
 
 ## INSTALLATION
 
-### Using `mise`
+### Using [`mise`](https://mise.jdx.dev)
 
 ```bash
 mise use go:github.com/andrew-grechkin/colored-md@latest
@@ -65,6 +65,17 @@ You can pipe Markdown content directly to `colored-md`:
 echo -e "# Hello World\nThis is **bold** text." | colored-md
 ```
 
+```bash
+colored-md <<< $'# Hello World\nThis is **bold** text.'
+```
+
+```bash
+colored-md << EO_MARKDOWN
+# Hello World
+This is **bold** text.
+EO_MARKDOWN
+```
+
 ### Processing files
 
 Specify one or more Markdown files as arguments:
@@ -73,10 +84,20 @@ Specify one or more Markdown files as arguments:
 colored-md README.md my_document.md
 ```
 
+Or [UUOC](<https://en.wikipedia.org/wiki/Cat_(Unix)#Useless_use_of_cat>), if one would like:
+
+```bash
+cat README.md | colored-md
+```
+
 To read from standard input while also processing files, use `-` as a filename:
 
 ```bash
-cat my_file.md | colored-md - README.md
+echo -e '# Hello World\nPlease read carefully the following\n' | colored-md - README.md
+```
+
+```bash
+colored-md - README.md <<< $'# Hello World\nPlease read carefully the following\n'
 ```
 
 ### Executable markdown files
@@ -97,6 +118,8 @@ chmod +x document.md
 ```
 
 The shebang line will be automatically stripped from the rendered output. See `example/executable.md` for a working example.
+
+This is how [I use the feature](https://github.com/andrew-grechkin/dotfiles/blob/main/.local/scripts/tui/menu-pacman#L29)
 
 ### Customize output width
 

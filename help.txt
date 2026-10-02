@@ -1,9 +1,10 @@
-Usage: colored-md [OPTIONS] [FILE...]
-
 A terminal markdown filter with syntax highlighting.
 
-If no FILE is specified or FILE is '-', read from standard input.
+If no FILE is specified or FILE is '-', read from STDIN.
 Multiple files can be specified and will be processed in order.
+
+Usage:
+  colored-md [OPTIONS] [FILE...]
 
 Options:
   -h, --help        Display help message
@@ -12,9 +13,12 @@ Options:
   -s, --styles      List available styles and exit
 
 Environment Variables:
-  GLAMOUR_WIDTH     Set the rendering width (default: 120)
-  GLAMOUR_STYLE     Set one of the predefined styles
+  GLAMOUR_WIDTH                Set the rendering width (default: 120)
+  GLAMOUR_STYLE                Set one of the predefined styles
+  GLAMOUR_OVERRIDE_MARGIN      Override margin (default: 0)
+  GLAMOUR_OVERRIDE_MARGIN_CODE Override code block margin (default: 0)
 
 Examples:
   colored-md file1.md file2.md
-  colored-md < file.md
+  colored-md < README.md
+  colored-md <<< $'# Hello World\nThis is **bold** text.'
