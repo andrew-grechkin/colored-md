@@ -44,7 +44,7 @@ export PATH="${GOBIN:-${GOPATH:-$HOME/go}/bin}:$PATH"
 ## FEATURES
 
 - Renders Markdown to ANSI-colored terminal output
-- Customizable output width via `GLAMOUR_WIDTH` environment variable
+- Customizable output width via `GLAMOUR_WIDTH` environment variable (defaults to terminal width, capped at 120)
 - Customizable style via `GLAMOUR_STYLE` environment variable
 - Supports overriding styling defaults
 - Processes both piped input and specified file paths
@@ -128,6 +128,8 @@ Set the `GLAMOUR_WIDTH` environment variable to control the word wrap width:
 ```bash
 GLAMOUR_WIDTH=80 colored-md README.md
 ```
+
+When `GLAMOUR_WIDTH` is not set, the width defaults to `120` or the current terminal width, whichever is smaller.
 
 ### Customize margins
 

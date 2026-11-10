@@ -13,7 +13,7 @@ Options:
   -s, --styles      List available styles and exit
 
 Environment Variables:
-  GLAMOUR_WIDTH                Set the rendering width (default: 120)
+  GLAMOUR_WIDTH                Set the rendering width (default: min(120, terminal width))
   GLAMOUR_STYLE                Set one of the predefined styles
   GLAMOUR_OVERRIDE_MARGIN      Override margin (default: 0)
   GLAMOUR_OVERRIDE_MARGIN_CODE Override code block margin (default: 0)

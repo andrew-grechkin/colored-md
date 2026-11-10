@@ -134,7 +134,7 @@ func getEnvUint(key string, defaultFn func() uint64) uint64 {
 	return defaultFn()
 }
 
-// queryTerminalBackground sends OSC 11 query and returns the terminal response
+// send OSC 11 query and returns the terminal response
 // Returns empty string if query fails or times out
 func queryTerminalBackground() string {
 	if !term.IsTerminal(int(os.Stdout.Fd())) {
@@ -170,7 +170,7 @@ func hexToFloat(h string) float64 {
 	return float64(val) / float64(max)
 }
 
-// parseTerminalBackgroundResponse parses OSC 11 response
+// parse OSC 11 response
 func parseTerminalBackgroundResponse(res string) string {
 	// The response format is usually: ^]11;rgb:rrrr/gggg/bbbb^G
 	re := regexp.MustCompile(`rgb:([0-9a-fA-F]+)/([0-9a-fA-F]+)/([0-9a-fA-F]+)`)
@@ -189,7 +189,7 @@ func parseTerminalBackgroundResponse(res string) string {
 	return defaultStyleDark
 }
 
-// detectStyleByTerminalBrightness determines terminal background brightness
+// determine terminal background brightness
 func detectStyleByTerminalBrightness() string {
 	if colorfgbg := os.Getenv("COLORFGBG"); colorfgbg != "" {
 		parts := strings.Split(colorfgbg, ";")
@@ -208,10 +208,17 @@ func detectStyleByTerminalBrightness() string {
 	return defaultStyleDark
 }
 
+// return the default rendering width, capped to the current terminal width so output is not wrapped beyond the visible
+// area.
+func defaultOutputWidth() int64 {
+	if w, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil && w > 0 && w < defaultWidth {
+		return int64(w)
+	}
+	return defaultWidth
+}
+
 func main() {
-	width := int(getEnvInt("GLAMOUR_WIDTH", func() int64 {
-		return defaultWidth
-	}))
+	width := int(getEnvInt("GLAMOUR_WIDTH", defaultOutputWidth))
 
 	customConfig := GetStyleConfig()
 
